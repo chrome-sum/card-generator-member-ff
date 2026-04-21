@@ -1,36 +1,102 @@
-export function parseBulkLine(line, fallbackAddress) {
-  const parts = line.split(",").map((part) => part.trim());
+const HEADER_ALIASES = {
+  name: new Set(["nama", "name", "nama member"]),
+  phone: new Set(["whatsapp", "wa", "no hp", "nomor", "nomor whatsapp", "phone"]),
+  address: new Set(["alamat", "wilayah", "alamat / wilayah", "wilayah / alamat"]),
+};
 
-  if (parts.length < 2 || !parts[0] || !parts[1]) {
+function normalizeHeaderCell(value) {
+  return String(value ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
+function isHeaderRow(cells) {
+  const [name = "", phone = "", address = ""] = cells.map(normalizeHeaderCell);
+
+  return (
+    HEADER_ALIASES.name.has(name) &&
+    HEADER_ALIASES.phone.has(phone) &&
+    HEADER_ALIASES.address.has(address)
+  );
+}
+
+function parseSpreadsheetRow(line) {
+  return line.split("\t").map((cell) => cell.trim());
+}
+
+function getInvalidReason(cells) {
+  const [name = "", , address = ""] = cells;
+
+  if (!name && !address) {
+    return "nama dan alamat kosong";
+  }
+
+  if (!name) {
+    return "nama kosong";
+  }
+
+  if (!address) {
+    return "alamat kosong";
+  }
+
+  return "format baris tidak valid";
+}
+
+export function parseBulkLine(line) {
+  const cells = parseSpreadsheetRow(line);
+  const [name = "", phone = "", address = ""] = cells;
+
+  if (!name || !address) {
     return null;
   }
 
   return {
-    name: parts[0],
-    phone: parts[1],
-    address: parts.slice(2).join(", ").trim() || fallbackAddress,
+    name,
+    phone,
+    address,
   };
 }
 
-export function parseBulkRecords(rawData, fallbackAddress) {
-  const lines = rawData
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean);
+export function parseBulkRecords(rawData) {
+  const rawLines = rawData
+    .split(/\r?\n/)
+    .map((line) => line.replace(/\r/g, ""))
+    .filter((line) => line.trim().length > 0);
 
   const validRecords = [];
-  const invalidLines = [];
+  const invalidRows = [];
+  const invalidDetails = [];
+  let skippedHeader = false;
 
-  lines.forEach((line, index) => {
-    const record = parseBulkLine(line, fallbackAddress);
+  rawLines.forEach((line, index) => {
+    const cells = parseSpreadsheetRow(line);
+
+    if (index === 0 && isHeaderRow(cells)) {
+      skippedHeader = true;
+      return;
+    }
+
+    const record = parseBulkLine(line);
 
     if (record) {
       validRecords.push(record);
       return;
     }
 
-    invalidLines.push(index + 1);
+    invalidRows.push(index + 1);
+    invalidDetails.push({
+      row: index + 1,
+      reason: getInvalidReason(cells),
+      raw: line,
+    });
   });
 
-  return { validRecords, invalidLines };
+  return {
+    validRecords,
+    invalidRows,
+    invalidDetails,
+    skippedHeader,
+    totalRows: rawLines.length,
+  };
 }
