@@ -1,0 +1,91 @@
+@import "tailwindcss";
+
+body {
+  font-family: "Quicksand", sans-serif;
+  background-color: #f1f5f9;
+}
+
+.card-wrapper {
+  --preview-scale: 0.4946;
+  perspective: 1000px;
+  width: 100%;
+  max-width: 500px;
+  height: calc(638px * var(--preview-scale));
+  position: relative;
+  transition: all 0s;
+}
+
+#membership-card {
+  width: 1011px;
+  height: 638px;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+  transform-origin: top left;
+  border-radius: 32px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.preview-scale {
+  transform: scale(var(--preview-scale));
+}
+
+.tab-active {
+  border-bottom: 3px solid #00e5ff;
+  color: #000;
+  font-weight: 700;
+}
+
+.tab-button:focus-visible,
+.action-button:focus-visible,
+.form-control:focus-visible {
+  outline: 3px solid rgba(0, 229, 255, 0.45);
+  outline-offset: 2px;
+}
+
+.action-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.qr-card-box {
+  border: 4px solid #f8fafc;
+  border-radius: 35px;
+  padding: 20px;
+  background: #fff;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  width: 230px;
+}
+
+.info-stack,
+.brand-pill,
+.name-text,
+.phone-text,
+.address-text,
+.phone-shell,
+.footer-shell {
+  min-width: 0;
+}
+
+.phone-shell,
+.footer-shell {
+  width: 100%;
+}
+
+.brand-pill {
+  max-width: 420px;
+}
+
+.name-text,
+.phone-text,
+.address-text,
+.brand-pill h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-message {
+  line-height: 1.5;
+}

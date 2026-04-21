@@ -1,0 +1,39 @@
+{
+  "name": "card-generator-member-ff",
+  "version": "1.0.0",
+  "description": "Generator kartu member frozen food dengan workflow modern berbasis Vite.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chrome-sum/card-generator-member-ff.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/chrome-sum/card-generator-member-ff/issues"
+  },
+  "homepage": "https://github.com/chrome-sum/card-generator-member-ff#readme",
+  "dependencies": {
+    "file-saver": "^2.0.5",
+    "html-to-image": "^1.11.13",
+    "jszip": "^3.10.1",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.2.3",
+    "eslint": "^10.2.1",
+    "globals": "^17.5.0",
+    "prettier": "^3.8.3",
+    "tailwindcss": "^4.2.3",
+    "vite": "^8.0.9"
+  }
+}
