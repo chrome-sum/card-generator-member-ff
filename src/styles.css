@@ -59,6 +59,10 @@ body {
   width: 230px;
 }
 
+.card-main-single-column {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .info-stack,
 .brand-pill,
 .name-text,
