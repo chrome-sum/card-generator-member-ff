@@ -78,14 +78,20 @@ body {
   width: 100%;
 }
 
+.phone-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .brand-pill {
-  max-width: 420px;
+  width: fit-content;
+  max-width: none;
+  flex-shrink: 0;
 }
 
 .name-text,
 .phone-text,
-.address-text,
-.brand-pill h2 {
+.address-text {
   overflow: hidden;
   text-overflow: ellipsis;
 }

@@ -16,12 +16,28 @@ export function createPreviewController(elements, renderQrCode) {
     qrCanvas,
   } = elements;
 
-  function fitCardText(element, maxSize, minSize, step) {
+  function getTextWidth(element) {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+
+    return Math.ceil(range.getBoundingClientRect().width);
+  }
+
+  function fitCardText(element, maxSize, minSize, step, safeGap = 0) {
     let size = maxSize;
     element.style.fontSize = `${maxSize}px`;
 
-    while (size > minSize && element.scrollWidth > element.clientWidth) {
-      size -= step;
+    while (size > minSize && getTextWidth(element) > element.clientWidth) {
+      size = Math.max(size - step, minSize);
+      element.style.fontSize = `${size}px`;
+    }
+
+    while (
+      safeGap > 0 &&
+      size > minSize &&
+      getTextWidth(element) > Math.max(element.clientWidth - safeGap, 0)
+    ) {
+      size -= 1;
       element.style.fontSize = `${size}px`;
     }
   }
@@ -40,9 +56,9 @@ export function createPreviewController(elements, renderQrCode) {
     qrSection.classList.toggle("hidden", !shouldShowQr);
     cardMainSection.classList.toggle("card-main-single-column", !shouldShowQr);
 
-    fitCardText(cardName, 60, 36, 8);
-    fitCardText(cardPhone, 36, 24, 4);
-    fitCardText(cardAddress, 24, 18, 3);
+    fitCardText(cardName, 60, 36, 8, 4);
+    fitCardText(cardPhone, 36, 24, 4, 4);
+    fitCardText(cardAddress, 24, 18, 3, 2);
 
     if (shouldShowQr) {
       await renderQrCode(qrCanvas, `https://wa.me/${normalizedPhone}`);

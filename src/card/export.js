@@ -56,6 +56,10 @@ export function createExportController(elements, previewController, stateManager
       setStatus(singleStatus, "Export PNG gagal. Coba lagi beberapa saat.", "error");
     } finally {
       previewController.restoreAfterExport();
+      const nextState = stateManager.getState();
+      await previewController.updateCard(nextState.singleMember, {
+        qrEnabled: nextState.singleQrEnabled,
+      });
       btnSingle.disabled = false;
       btnSingle.innerText = originalText;
     }
