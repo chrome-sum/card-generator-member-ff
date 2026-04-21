@@ -124,8 +124,8 @@ export function createAppMarkup() {
             <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-gray-50 rounded-full opacity-50"></div>
           </div>
         </div>
-        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest italic">Full Stability Export Update - V4.0 build by <span class="text-indigo-800"><a href="https://hasbi-alajiz.my.id">Hasbie</a></span></p>
       </div>
+      <p class="mt-auto pt-8 text-xs sm:text-sm font-bold text-gray-400 uppercase tracking-widest italic text-center">Full Stability Export Update - V4.0 built by <span><a href="https://hasbi-alajiz.my.id" target="_blank" rel="noreferrer" class="text-lime-500 transition-colors hover:text-lime-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300 rounded-sm">Hasbie</a></span></p>
     </div>
   `;
 }
