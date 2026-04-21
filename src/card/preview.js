@@ -5,9 +5,11 @@ export function createPreviewController(elements, renderQrCode) {
   const {
     card,
     wrapper,
+    cardMainSection,
     cardName,
     cardPhone,
     cardAddress,
+    qrSection,
     inputName,
     inputPhone,
     inputAddress,
@@ -24,21 +26,27 @@ export function createPreviewController(elements, renderQrCode) {
     }
   }
 
-  async function updateCard(member = {}) {
+  async function updateCard(member = {}, options = {}) {
     const name = member.name ?? (inputName.value.trim() || DEFAULT_MEMBER.name);
     const phone = member.phone ?? (inputPhone.value.trim() || DEFAULT_MEMBER.phone);
     const address = member.address ?? (inputAddress.value.trim() || DEFAULT_MEMBER.address);
     const normalizedPhone = normalizePhone(phone);
+    const qrEnabled = options.qrEnabled ?? false;
+    const shouldShowQr = qrEnabled && Boolean(normalizedPhone);
 
     cardName.innerText = name.toUpperCase();
     cardPhone.innerText = formatPhone(normalizedPhone) || "-";
     cardAddress.innerText = address.toUpperCase();
+    qrSection.classList.toggle("hidden", !shouldShowQr);
+    cardMainSection.classList.toggle("card-main-single-column", !shouldShowQr);
 
     fitCardText(cardName, 60, 36, 8);
     fitCardText(cardPhone, 36, 24, 4);
     fitCardText(cardAddress, 24, 18, 3);
 
-    await renderQrCode(qrCanvas, normalizedPhone ? `https://wa.me/${normalizedPhone}` : "Nomor WhatsApp belum diisi");
+    if (shouldShowQr) {
+      await renderQrCode(qrCanvas, `https://wa.me/${normalizedPhone}`);
+    }
   }
 
   function syncPreviewScale() {

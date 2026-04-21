@@ -28,6 +28,10 @@ export function createAppMarkup() {
               <input type="text" id="input-address" placeholder="Panjalu, Ciamis" class="form-control w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-sm focus:ring-2 focus:ring-[#00E5FF] focus:border-[#00E5FF] outline-none transition">
             </div>
           </div>
+          <label for="single-use-qr" class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-bold text-gray-700">
+            <input type="checkbox" id="single-use-qr" class="h-4 w-4 accent-gray-900">
+            Gunakan QR Code
+          </label>
           <p id="single-status" class="status-message hidden text-xs font-bold rounded-xl px-4 py-3"></p>
           <button id="btn-single" type="button" class="action-button w-full bg-gray-900 text-white font-black py-4 rounded-xl hover:bg-black transition-all text-[11px] uppercase tracking-[0.3em]">
             Download Card (PNG)
@@ -35,8 +39,20 @@ export function createAppMarkup() {
         </div>
 
         <div id="panel-bulk" class="hidden space-y-4">
-          <textarea id="bulk-data" rows="4" class="form-control w-full p-4 bg-gray-50 border border-gray-200 rounded-xl font-mono text-xs outline-none focus:ring-2 focus:ring-[#00E5FF] focus:border-[#00E5FF] transition" placeholder="HASBI, 628123, Ciamis"></textarea>
-          <p class="text-[11px] text-gray-500 leading-relaxed">Format per baris: <span class="font-mono font-bold">Nama, WhatsApp, Alamat</span></p>
+          <textarea id="bulk-data" rows="6" class="form-control w-full p-4 bg-gray-50 border border-gray-200 rounded-xl font-mono text-xs outline-none focus:ring-2 focus:ring-[#00E5FF] focus:border-[#00E5FF] transition" placeholder="Nama	WhatsApp	Alamat&#10;Hasbi	628123456789	Ciamis&#10;Sinta		Tasikmalaya"></textarea>
+          <p class="text-[11px] text-gray-500 leading-relaxed">Copy tabel dari Excel atau Google Sheets lalu paste di sini. Urutan kolom: <span class="font-mono font-bold">Nama, WhatsApp, Alamat</span>.</p>
+          <label for="bulk-use-qr" class="flex items-center gap-3 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm font-bold text-gray-700">
+            <input type="checkbox" id="bulk-use-qr" class="h-4 w-4 accent-blue-600">
+            Sertakan QR Code di semua kartu
+          </label>
+          <div id="bulk-preview" class="hidden rounded-2xl border border-gray-200 bg-gray-50 p-4 space-y-3">
+            <div class="flex flex-col gap-1">
+              <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Preview Parse</p>
+              <p id="bulk-summary" class="text-sm font-bold text-gray-700"></p>
+            </div>
+            <div id="bulk-valid-preview" class="space-y-2"></div>
+            <div id="bulk-invalid-preview" class="space-y-2"></div>
+          </div>
           <div id="progress-area" class="hidden space-y-1">
             <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
               <div id="progress-bar" class="bg-[#FF007F] h-full" style="width: 0%"></div>
@@ -71,7 +87,7 @@ export function createAppMarkup() {
                 </div>
               </div>
 
-              <div class="mt-12 grid grid-cols-[minmax(0,1fr)_230px] gap-8 items-start w-full">
+              <div id="card-main-section" class="mt-12 grid grid-cols-[minmax(0,1fr)_230px] gap-8 items-start w-full">
                 <div class="info-stack space-y-8 pr-4">
                   <div class="bg-gray-50/50 p-8 rounded-[40px] border-2 border-gray-50">
                     <p class="text-lg font-bold text-[#FF007F] uppercase tracking-[0.4em] mb-2">Nama Member</p>
@@ -86,7 +102,7 @@ export function createAppMarkup() {
                   </div>
                 </div>
 
-                <div class="qr-card-box text-center shrink-0">
+                <div id="qr-section" class="qr-card-box text-center shrink-0">
                   <p class="text-gray-400 font-black text-[10px] uppercase tracking-[0.4em] mb-4">Scan WA</p>
                   <div class="border-[4px] border-gray-900 p-2 rounded-[24px] bg-white inline-block">
                     <canvas id="qrcode" width="175" height="175"></canvas>
