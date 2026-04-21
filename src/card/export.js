@@ -2,24 +2,20 @@ import { toPng } from "html-to-image";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
 
-import { CARD_SIZE, DEFAULT_MEMBER, EXPORT_DELAY_MS } from "../config.js";
+import { CARD_SIZE, EXPORT_DELAY_MS } from "../config.js";
 import { sanitizeFilename } from "../utils/filename.js";
-import { parseBulkRecords } from "../utils/bulk.js";
 import { wait } from "../utils/time.js";
 import { setStatus } from "../ui/status.js";
 
-export function createExportController(elements, previewController) {
+export function createExportController(elements, previewController, stateManager) {
   const {
     card,
     btnSingle,
-    btnBulk,
-    bulkData,
     progressArea,
     progressBar,
     progressText,
     singleStatus,
     bulkStatus,
-    inputName,
   } = elements;
 
   async function exportCardToPng() {
@@ -32,6 +28,7 @@ export function createExportController(elements, previewController) {
   }
 
   async function exportSinglePNG() {
+    const state = stateManager.getState();
     const originalText = btnSingle.innerText;
     btnSingle.disabled = true;
     btnSingle.innerText = "MENYIMPAN GAMBAR...";
@@ -42,11 +39,14 @@ export function createExportController(elements, previewController) {
     try {
       await document.fonts.ready;
       await wait(EXPORT_DELAY_MS.single);
+      await previewController.updateCard(state.singleMember, {
+        qrEnabled: state.singleQrEnabled,
+      });
 
       const dataUrl = await exportCardToPng();
       const link = document.createElement("a");
 
-      link.download = `ABC-Member-${sanitizeFilename(inputName.value, "Card")}.png`;
+      link.download = `ABC-Member-${sanitizeFilename(state.singleMember.name, "Card")}.png`;
       link.href = dataUrl;
       link.click();
 
@@ -62,17 +62,26 @@ export function createExportController(elements, previewController) {
   }
 
   async function exportBulkZip() {
-    const rawData = bulkData.value.trim();
+    const state = stateManager.getState();
+    const {
+      validRecords,
+      invalidRows,
+      invalidDetails,
+      skippedHeader,
+      totalRows,
+    } = state.bulkParseResult;
 
-    if (!rawData) {
+    if (!state.bulkRawData.trim()) {
       setStatus(bulkStatus, "Isi data bulk terlebih dulu sebelum membuat ZIP.", "error");
       return;
     }
 
-    const { validRecords, invalidLines } = parseBulkRecords(rawData, DEFAULT_MEMBER.address);
-
     if (!validRecords.length) {
-      setStatus(bulkStatus, "Tidak ada baris valid. Gunakan format: Nama, WhatsApp, Alamat.", "error");
+      setStatus(
+        bulkStatus,
+        "Tidak ada baris valid. Paste tabel spreadsheet dengan urutan: Nama, WhatsApp, Alamat.",
+        "error",
+      );
       return;
     }
 
@@ -80,13 +89,22 @@ export function createExportController(elements, previewController) {
     progressBar.style.width = "0%";
     progressText.innerText = "0%";
     progressArea.classList.remove("hidden");
-    btnBulk.disabled = true;
+    stateManager.setBulkExporting(true);
     setStatus(
       bulkStatus,
-      invalidLines.length
-        ? `Baris tidak valid dilewati: ${invalidLines.join(", ")}.`
-        : "Sedang membuat ZIP kartu member.",
-      invalidLines.length ? "info" : "success",
+      [
+        `Terbaca ${totalRows} baris`,
+        skippedHeader ? "header dilewati" : null,
+        `${validRecords.length} valid`,
+        invalidRows.length
+          ? `${invalidRows.length} invalid (${invalidDetails
+              .map((detail) => `baris ${detail.row}: ${detail.reason}`)
+              .join(", ")})`
+          : "0 invalid",
+      ]
+        .filter(Boolean)
+        .join(" - "),
+      "info",
     );
 
     previewController.prepareForExport();
@@ -96,7 +114,7 @@ export function createExportController(elements, previewController) {
 
       for (let index = 0; index < validRecords.length; index += 1) {
         const record = validRecords[index];
-        await previewController.updateCard(record);
+        await previewController.updateCard(record, { qrEnabled: state.bulkQrEnabled });
         await wait(EXPORT_DELAY_MS.bulk);
 
         const dataUrl = await exportCardToPng();
@@ -114,9 +132,18 @@ export function createExportController(elements, previewController) {
 
       setStatus(
         bulkStatus,
-        invalidLines.length
-          ? `ZIP selesai dibuat. ${invalidLines.length} baris invalid dilewati.`
-          : "ZIP berhasil dibuat.",
+        [
+          "ZIP berhasil dibuat.",
+          `${validRecords.length} kartu diekspor`,
+          invalidRows.length
+            ? `${invalidRows.length} baris invalid dilewati (${invalidDetails
+                .map((detail) => `baris ${detail.row}: ${detail.reason}`)
+                .join(", ")})`
+            : null,
+          skippedHeader ? "header otomatis diabaikan" : null,
+        ]
+          .filter(Boolean)
+          .join(" - "),
         "success",
       );
     } catch (error) {
@@ -127,8 +154,11 @@ export function createExportController(elements, previewController) {
       progressArea.classList.add("hidden");
       progressBar.style.width = "0%";
       progressText.innerText = "0%";
-      btnBulk.disabled = false;
-      await previewController.updateCard();
+      stateManager.setBulkExporting(false);
+      const nextState = stateManager.getState();
+      await previewController.updateCard(nextState.singleMember, {
+        qrEnabled: nextState.singleQrEnabled,
+      });
     }
   }
 
