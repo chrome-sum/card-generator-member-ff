@@ -5,7 +5,6 @@ export function createPreviewController(elements, renderQrCode) {
   const {
     card,
     wrapper,
-    cardMainSection,
     cardName,
     cardPhone,
     cardAddress,
@@ -54,11 +53,11 @@ export function createPreviewController(elements, renderQrCode) {
     cardPhone.innerText = formatPhone(normalizedPhone) || "-";
     cardAddress.innerText = address.toUpperCase();
     qrSection.classList.toggle("hidden", !shouldShowQr);
-    cardMainSection.classList.toggle("card-main-single-column", !shouldShowQr);
+    card.classList.toggle("card-has-qr", shouldShowQr);
 
-    fitCardText(cardName, 60, 36, 8, 4);
-    fitCardText(cardPhone, 36, 24, 4, 4);
-    fitCardText(cardAddress, 24, 18, 3, 2);
+    fitCardText(cardName, shouldShowQr ? 64 : 74, 34, 4, shouldShowQr ? 24 : 10);
+    fitCardText(cardPhone, shouldShowQr ? 26 : 30, 20, 2, shouldShowQr ? 14 : 6);
+    fitCardText(cardAddress, shouldShowQr ? 20 : 22, 16, 2, 6);
 
     if (shouldShowQr) {
       await renderQrCode(qrCanvas, `https://wa.me/${normalizedPhone}`);

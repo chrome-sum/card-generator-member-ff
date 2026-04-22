@@ -1,8 +1,19 @@
 @import "tailwindcss";
 
+:root {
+  --card-bg: #111111;
+  --card-border: rgba(255, 255, 255, 0.14);
+  --accent-cyan: #00e5ff;
+  --accent-pink: #ff007f;
+  --text-soft: rgba(255, 255, 255, 0.68);
+}
+
 body {
   font-family: "Quicksand", sans-serif;
-  background-color: #f1f5f9;
+  background:
+    radial-gradient(circle at top left, rgba(0, 229, 255, 0.12), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(255, 0, 127, 0.12), transparent 30%),
+    linear-gradient(180deg, #eef2f6 0%, #e2e8f0 100%);
 }
 
 .card-wrapper {
@@ -13,19 +24,24 @@ body {
   height: calc(638px * var(--preview-scale));
   position: relative;
   transition: all 0s;
+  overflow: hidden;
 }
 
 #membership-card {
   width: 1011px;
   height: 638px;
-  background-color: white;
   position: absolute;
   top: 0;
   left: 0;
   overflow: hidden;
   transform-origin: top left;
-  border-radius: 32px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border-radius: 40px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 35%),
+    linear-gradient(180deg, #171717 0%, #101010 100%);
+  box-shadow:
+    0 34px 70px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .preview-scale {
@@ -50,64 +66,312 @@ body {
   cursor: not-allowed;
 }
 
-.qr-card-box {
-  border: 4px solid #f8fafc;
-  border-radius: 35px;
-  padding: 20px;
-  background: #fff;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
-  width: 230px;
+.accent-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 100%;
+  background: linear-gradient(180deg, #8af7ff 0%, var(--accent-cyan) 100%);
+  z-index: 6;
 }
 
-.card-main-single-column {
-  grid-template-columns: minmax(0, 1fr);
+.card-noise {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(180deg, black, transparent 80%);
+  z-index: 1;
 }
 
-.info-stack,
-.brand-pill,
-.name-text,
-.phone-text,
-.address-text,
-.phone-shell,
-.footer-shell {
+.store-bg {
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 74%;
+  height: 100%;
+  background-image: url("/background.jpeg");
+  background-size: cover;
+  background-position: center;
+  filter: saturate(0.95) contrast(1.05);
+  z-index: 2;
+}
+
+.gradient-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      90deg,
+      #111111 0%,
+      #111111 26%,
+      rgba(17, 17, 17, 0.9) 45%,
+      rgba(17, 17, 17, 0.28) 70%,
+      rgba(17, 17, 17, 0.05) 100%
+    ),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.32));
+  z-index: 3;
+}
+
+.cyan-glow,
+.pink-glow {
+  position: absolute;
+  border-radius: 999px;
+  z-index: 3;
+}
+
+.cyan-glow {
+  top: -90px;
+  right: 220px;
+  width: 260px;
+  height: 260px;
+  background: radial-gradient(circle, rgba(0, 229, 255, 0.28) 0%, rgba(0, 229, 255, 0) 72%);
+}
+
+.pink-glow {
+  bottom: -120px;
+  left: 180px;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(255, 0, 127, 0.16) 0%, rgba(255, 0, 127, 0) 72%);
+}
+
+.content-layer {
+  position: relative;
+  z-index: 8;
+  height: 100%;
+  padding: 52px 56px 48px 58px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+}
+
+.brand-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   min-width: 0;
 }
 
-.phone-shell,
-.footer-shell {
-  width: 100%;
+.logo-shell {
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
+  padding: 7px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 245, 247, 0.84));
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.brand-copy {
+  min-width: 0;
+}
+
+.brand-kicker,
+.phone-label,
+.footer-label,
+.qr-label,
+.member-badge-top {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+}
+
+.brand-kicker {
+  font-size: 10px;
+  color: #67e8f9;
+}
+
+.brand-name {
+  font-size: 38px;
+  line-height: 1;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: -0.06em;
+  font-weight: 900;
 }
 
 .member-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  transform: rotate(2deg);
+  background: linear-gradient(135deg, #ff3ca0 0%, var(--accent-pink) 100%);
+  box-shadow: 0 16px 32px rgba(255, 0, 127, 0.34);
+  border-radius: 24px;
+  padding: 12px 32px;
+  color: white;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.member-badge-top {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .member-badge-text {
   display: block;
+  font-size: 30px;
+  font-style: italic;
+  font-weight: 900;
   line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }
 
-.phone-text {
-  flex: 1 1 auto;
+.card-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  min-height: 0;
+  flex: 1;
+}
+
+.member-copy {
+  max-width: 60%;
+  margin-top: -18px;
   min-width: 0;
 }
 
-.brand-pill {
-  width: fit-content;
-  max-width: none;
-  flex-shrink: 0;
+.name-text {
+  max-width: 100%;
+  color: white;
+  font-size: 74px;
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  font-weight: 900;
+  overflow: hidden;
 }
 
-.name-text,
-.phone-text,
-.address-text {
+.phone-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
+  margin-top: 22px;
+  min-width: 0;
+}
+
+.phone-icon-shell,
+.footer-icon-shell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 999px;
+}
+
+.phone-icon-shell {
+  background: #25d366;
+  color: white;
+  box-shadow: 0 12px 24px rgba(37, 211, 102, 0.24);
+}
+
+.footer-icon-shell {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.phone-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.footer-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.phone-copy,
+.footer-copy {
+  min-width: 0;
+}
+
+.phone-label,
+.footer-label,
+.qr-label {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.phone-text {
+  color: white;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
   overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.qr-label {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.qr-shell {
+  padding: 14px;
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 24px 36px rgba(0, 0, 0, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.footer-address {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 720px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(255, 255, 255, 0.82);
+  min-width: 0;
+}
+
+.address-text {
+  color: rgba(255, 255, 255, 0.84);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.15;
+  overflow: hidden;
 }
 
 .status-message {
   line-height: 1.5;
 }
+
+#membership-card.card-has-qr .member-copy {
+  max-width: 50%;
+  margin-top: 0;
+}
+
+#membership-card.card-has-qr .card-body {
+  align-items: center;
+}
+
+#membership-card.card-has-qr .footer-address {
+  max-width: 560px;
+}
+
