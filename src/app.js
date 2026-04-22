@@ -82,8 +82,8 @@ export function createAppMarkup() {
                   </div>
                 </div>
 
-                <div class="bg-[#FF007F] px-10 py-5 rounded-3xl shadow-xl rotate-2 shrink-0">
-                  <span class="text-white text-4xl font-black italic tracking-widest uppercase">Member</span>
+                <div class="member-badge bg-[#FF007F] px-10 py-5 rounded-3xl shadow-xl rotate-2 shrink-0">
+                  <span class="member-badge-text text-white text-4xl font-black italic tracking-widest uppercase">Member</span>
                 </div>
               </div>
 
