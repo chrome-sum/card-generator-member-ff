@@ -159,13 +159,13 @@ body {
 .brand-chip {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 28px;
   min-width: 0;
 }
 
 .logo-shell {
-  width: 58px;
-  height: 58px;
+  width: 92px;
+  height: 92px;
   border-radius: 18px;
   padding: 7px;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 245, 247, 0.84));
@@ -187,12 +187,12 @@ body {
 }
 
 .brand-kicker {
-  font-size: 10px;
+  font-size: 18px;
   color: #67e8f9;
 }
 
 .brand-name {
-  font-size: 38px;
+  font-size: 42px;
   line-height: 1;
   color: white;
   text-transform: uppercase;
@@ -212,13 +212,14 @@ body {
 }
 
 .member-badge-top {
-  font-size: 14px;
+  font-size: 18px;
+  font-weight: 700;
   color: rgba(255, 255, 255, 0.72);
 }
 
 .member-badge-text {
   display: block;
-  font-size: 30px;
+  font-size: 32px;
   font-style: italic;
   font-weight: 900;
   line-height: 1;
@@ -285,8 +286,8 @@ body {
 }
 
 .phone-icon {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
 }
 
 .footer-icon {
@@ -302,13 +303,17 @@ body {
 .phone-label,
 .footer-label,
 .qr-label {
-  font-size: 10px;
+  font-size: 18px;
   color: rgba(255, 255, 255, 0.9);
+}
+
+.footer-copy .footer-label {
+  font-size: 24px;
 }
 
 .phone-text {
   color: white;
-  font-size: 30px;
+  font-size: 36px;
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1.1;
@@ -322,6 +327,10 @@ body {
   gap: 12px;
   flex-shrink: 0;
   align-self: center;
+}
+
+.qr-section.hidden {
+  display: none;
 }
 
 .qr-label {
@@ -352,7 +361,7 @@ body {
 
 .address-text {
   color: rgba(255, 255, 255, 0.84);
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 500;
   line-height: 1.15;
   overflow: hidden;

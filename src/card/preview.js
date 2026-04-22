@@ -14,6 +14,7 @@ export function createPreviewController(elements, renderQrCode) {
     inputAddress,
     qrCanvas,
   } = elements;
+  let qrRenderToken = 0;
 
   function getTextWidth(element) {
     const range = document.createRange();
@@ -41,7 +42,30 @@ export function createPreviewController(elements, renderQrCode) {
     }
   }
 
+  function clearQrCanvas(canvas) {
+    const context = canvas.getContext?.("2d");
+
+    if (context?.clearRect) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  function copyQrCanvas(sourceCanvas, targetCanvas) {
+    const context = targetCanvas.getContext?.("2d");
+
+    targetCanvas.width = sourceCanvas.width || targetCanvas.width;
+    targetCanvas.height = sourceCanvas.height || targetCanvas.height;
+
+    if (!context) {
+      return;
+    }
+
+    context.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
+    context.drawImage(sourceCanvas, 0, 0);
+  }
+
   async function updateCard(member = {}, options = {}) {
+    const renderToken = ++qrRenderToken;
     const name = member.name ?? (inputName.value.trim() || DEFAULT_MEMBER.name);
     const phone = member.phone ?? (inputPhone.value.trim() || DEFAULT_MEMBER.phone);
     const address = member.address ?? (inputAddress.value.trim() || DEFAULT_MEMBER.address);
@@ -55,13 +79,26 @@ export function createPreviewController(elements, renderQrCode) {
     qrSection.classList.toggle("hidden", !shouldShowQr);
     card.classList.toggle("card-has-qr", shouldShowQr);
 
-    fitCardText(cardName, shouldShowQr ? 64 : 74, 34, 4, shouldShowQr ? 24 : 10);
-    fitCardText(cardPhone, shouldShowQr ? 26 : 30, 20, 2, shouldShowQr ? 14 : 6);
-    fitCardText(cardAddress, shouldShowQr ? 20 : 22, 16, 2, 6);
+    fitCardText(cardName, 74, 34, 4, shouldShowQr ? 24 : 10);
+    fitCardText(cardPhone, 42, 20, 2, shouldShowQr ? 14 : 6);
+    fitCardText(cardAddress, 26, 16, 2, 6);
 
-    if (shouldShowQr) {
-      await renderQrCode(qrCanvas, `https://wa.me/${normalizedPhone}`);
+    if (!shouldShowQr) {
+      clearQrCanvas(qrCanvas);
+      return;
     }
+
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = qrCanvas.width;
+    tempCanvas.height = qrCanvas.height;
+
+    await renderQrCode(tempCanvas, `https://wa.me/${normalizedPhone}`);
+
+    if (renderToken !== qrRenderToken) {
+      return;
+    }
+
+    copyQrCanvas(tempCanvas, qrCanvas);
   }
 
   function syncPreviewScale() {
