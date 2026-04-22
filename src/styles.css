@@ -173,7 +173,7 @@ body {
 }
 
 .brand-copy {
-  min-width: 52px;
+  min-width: 92px;
 }
 
 .brand-kicker,
@@ -193,7 +193,7 @@ body {
 
 .brand-name {
   font-size: 46px;
-  line-height: 1;
+  line-height: 1.9em;
   color: white;
   text-transform: uppercase;
   letter-spacing: -0.06em;
