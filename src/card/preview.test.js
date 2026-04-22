@@ -35,6 +35,7 @@ function createTextElement(clientWidth = 400) {
   return {
     style: {},
     clientWidth,
+    scrollWidth: 0,
     innerText: "",
   };
 }
@@ -210,5 +211,30 @@ describe("createPreviewController", () => {
     expect(elements.cardName.style.fontSize).toBe(fontSizeWithoutQr.name);
     expect(elements.cardPhone.style.fontSize).toBe(fontSizeWithoutQr.phone);
     expect(elements.cardAddress.style.fontSize).toBe(fontSizeWithoutQr.address);
+  });
+
+  it("prefers layout width over transformed range width when fitting text", async () => {
+    const elements = createElements();
+    const renderQrCode = vi.fn(() => Promise.resolve());
+
+    elements.cardPhone.clientWidth = 300;
+    elements.cardPhone.scrollWidth = 280;
+
+    globalThis.document = {
+      createRange: () => ({
+        selectNodeContents: vi.fn(),
+        getBoundingClientRect: () => ({ width: 140 }),
+      }),
+      createElement: vi.fn(() => createCanvas()),
+    };
+
+    const controller = createPreviewController(elements, renderQrCode);
+
+    await controller.updateCard(
+      { name: "Short Name", phone: "08123456789", address: "Ciamis" },
+      { qrEnabled: false },
+    );
+
+    expect(elements.cardPhone.style.fontSize).toBe("42px");
   });
 });

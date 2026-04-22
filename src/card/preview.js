@@ -17,6 +17,10 @@ export function createPreviewController(elements, renderQrCode) {
   let qrRenderToken = 0;
 
   function getTextWidth(element) {
+    if (typeof element.scrollWidth === "number" && element.scrollWidth > 0) {
+      return element.scrollWidth;
+    }
+
     const range = document.createRange();
     range.selectNodeContents(element);
 
@@ -79,9 +83,9 @@ export function createPreviewController(elements, renderQrCode) {
     qrSection.classList.toggle("hidden", !shouldShowQr);
     card.classList.toggle("card-has-qr", shouldShowQr);
 
-    fitCardText(cardName, 74, 34, 4, shouldShowQr ? 24 : 10);
-    fitCardText(cardPhone, 42, 20, 2, shouldShowQr ? 14 : 6);
-    fitCardText(cardAddress, 26, 16, 2, 6);
+    fitCardText(cardName, 74, 42, 4, shouldShowQr ? 24 : 10);
+    fitCardText(cardPhone, 42, 36, 2, shouldShowQr ? 14 : 6);
+    fitCardText(cardAddress, 26, 26, 2, 6);
 
     if (!shouldShowQr) {
       clearQrCanvas(qrCanvas);

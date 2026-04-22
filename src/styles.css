@@ -187,12 +187,12 @@ body {
 }
 
 .brand-kicker {
-  font-size: 18px;
+  font-size: 24px;
   color: #67e8f9;
 }
 
 .brand-name {
-  font-size: 42px;
+  font-size: 46px;
   line-height: 1;
   color: white;
   text-transform: uppercase;
@@ -212,14 +212,14 @@ body {
 }
 
 .member-badge-top {
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 800;
   color: rgba(255, 255, 255, 0.72);
 }
 
 .member-badge-text {
   display: block;
-  font-size: 32px;
+  font-size: 36px;
   font-style: italic;
   font-weight: 900;
   line-height: 1;
@@ -286,8 +286,8 @@ body {
 }
 
 .phone-icon {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
 }
 
 .footer-icon {
@@ -303,12 +303,12 @@ body {
 .phone-label,
 .footer-label,
 .qr-label {
-  font-size: 18px;
+  font-size: 28px;
   color: rgba(255, 255, 255, 0.9);
 }
 
 .footer-copy .footer-label {
-  font-size: 24px;
+  font-size: 28px;
 }
 
 .phone-text {
