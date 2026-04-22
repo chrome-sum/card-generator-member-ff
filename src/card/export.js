@@ -18,6 +18,14 @@ export function createExportController(elements, previewController, stateManager
     bulkStatus,
   } = elements;
 
+  async function waitForFonts() {
+    const fontsReady = document.fonts?.ready;
+
+    if (fontsReady && typeof fontsReady.then === "function") {
+      await fontsReady;
+    }
+  }
+
   async function exportCardToPng() {
     return toPng(card, {
       pixelRatio: 2,
@@ -29,7 +37,14 @@ export function createExportController(elements, previewController, stateManager
 
   async function exportSinglePNG() {
     const state = stateManager.getState();
+
+    if (state.isSingleExporting || state.isBulkExporting) {
+      setStatus(singleStatus, "Export sedang berjalan. Tunggu proses sebelumnya selesai.", "info");
+      return;
+    }
+
     const originalText = btnSingle.innerText;
+    stateManager.setSingleExporting(true);
     btnSingle.disabled = true;
     btnSingle.innerText = "MENYIMPAN GAMBAR...";
     setStatus(singleStatus, "", "info");
@@ -37,7 +52,7 @@ export function createExportController(elements, previewController, stateManager
     previewController.prepareForExport();
 
     try {
-      await document.fonts.ready;
+      await waitForFonts();
       await wait(EXPORT_DELAY_MS.single);
       await previewController.updateCard(state.singleMember, {
         qrEnabled: state.singleQrEnabled,
@@ -60,6 +75,7 @@ export function createExportController(elements, previewController, stateManager
       await previewController.updateCard(nextState.singleMember, {
         qrEnabled: nextState.singleQrEnabled,
       });
+      stateManager.setSingleExporting(false);
       btnSingle.disabled = false;
       btnSingle.innerText = originalText;
     }
@@ -67,6 +83,12 @@ export function createExportController(elements, previewController, stateManager
 
   async function exportBulkZip() {
     const state = stateManager.getState();
+
+    if (state.isSingleExporting || state.isBulkExporting) {
+      setStatus(bulkStatus, "Export sedang berjalan. Tunggu proses sebelumnya selesai.", "info");
+      return;
+    }
+
     const {
       validRecords,
       invalidRows,
@@ -114,7 +136,7 @@ export function createExportController(elements, previewController, stateManager
     previewController.prepareForExport();
 
     try {
-      await document.fonts.ready;
+      await waitForFonts();
 
       for (let index = 0; index < validRecords.length; index += 1) {
         const record = validRecords[index];

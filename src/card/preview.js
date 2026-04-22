@@ -15,6 +15,7 @@ export function createPreviewController(elements, renderQrCode) {
     inputAddress,
     qrCanvas,
   } = elements;
+  let qrRenderToken = 0;
 
   function getTextWidth(element) {
     const range = document.createRange();
@@ -42,7 +43,30 @@ export function createPreviewController(elements, renderQrCode) {
     }
   }
 
+  function clearQrCanvas(canvas) {
+    const context = canvas.getContext?.("2d");
+
+    if (context?.clearRect) {
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  }
+
+  function copyQrCanvas(sourceCanvas, targetCanvas) {
+    const context = targetCanvas.getContext?.("2d");
+
+    targetCanvas.width = sourceCanvas.width || targetCanvas.width;
+    targetCanvas.height = sourceCanvas.height || targetCanvas.height;
+
+    if (!context) {
+      return;
+    }
+
+    context.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
+    context.drawImage(sourceCanvas, 0, 0);
+  }
+
   async function updateCard(member = {}, options = {}) {
+    const renderToken = ++qrRenderToken;
     const name = member.name ?? (inputName.value.trim() || DEFAULT_MEMBER.name);
     const phone = member.phone ?? (inputPhone.value.trim() || DEFAULT_MEMBER.phone);
     const address = member.address ?? (inputAddress.value.trim() || DEFAULT_MEMBER.address);
@@ -54,15 +78,28 @@ export function createPreviewController(elements, renderQrCode) {
     cardPhone.innerText = formatPhone(normalizedPhone) || "-";
     cardAddress.innerText = address.toUpperCase();
     qrSection.classList.toggle("hidden", !shouldShowQr);
-    cardMainSection.classList.toggle("card-main-single-column", !shouldShowQr);
+    cardMainSection?.classList.toggle("card-main-single-column", !shouldShowQr);
 
     fitCardText(cardName, 60, 36, 8, 4);
     fitCardText(cardPhone, 36, 24, 4, 4);
     fitCardText(cardAddress, 24, 18, 3, 2);
 
-    if (shouldShowQr) {
-      await renderQrCode(qrCanvas, `https://wa.me/${normalizedPhone}`);
+    if (!shouldShowQr) {
+      clearQrCanvas(qrCanvas);
+      return;
     }
+
+    const tempCanvas = document.createElement("canvas");
+    tempCanvas.width = qrCanvas.width;
+    tempCanvas.height = qrCanvas.height;
+
+    await renderQrCode(tempCanvas, `https://wa.me/${normalizedPhone}`);
+
+    if (renderToken !== qrRenderToken) {
+      return;
+    }
+
+    copyQrCanvas(tempCanvas, qrCanvas);
   }
 
   function syncPreviewScale() {
