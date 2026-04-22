@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABC Jaya Member Card - Polished</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        :root {
+            --card-bg: #111111;
+            --card-surface: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.14);
+            --accent-cyan: #00e5ff;
+            --accent-pink: #ff007f;
+            --text-soft: rgba(255, 255, 255, 0.68);
+            --text-faint: rgba(255, 255, 255, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 32px 16px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(0, 229, 255, 0.15), transparent 32%),
+                radial-gradient(circle at bottom right, rgba(255, 0, 127, 0.18), transparent 28%),
+                linear-gradient(180deg, #eceff3 0%, #dfe5ea 100%);
+        }
+
+        .page-shell {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 24px;
+            justify-items: center;
+        }
+
+        .intro {
+            width: min(100%, 980px);
+            padding: 20px 24px;
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 18px 60px rgba(20, 28, 40, 0.08);
+        }
+
+        .card-stage {
+            width: min(100%, 1020px);
+            padding: 22px;
+            border-radius: 36px;
+            background: rgba(9, 9, 11, 0.08);
+            box-shadow: 0 30px 80px rgba(17, 24, 39, 0.18);
+        }
+
+        .card-preview {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 28px;
+        }
+
+        #membership-card {
+            width: 100%;
+            max-width: 1011px;
+            aspect-ratio: 1011 / 638;
+            height: auto;
+            position: relative;
+            overflow: hidden;
+            border-radius: 40px;
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.06), transparent 35%),
+                linear-gradient(180deg, #171717 0%, #101010 100%);
+            box-shadow:
+                0 34px 70px rgba(0, 0, 0, 0.34),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .accent-line {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 10px;
+            height: 100%;
+            background: linear-gradient(180deg, #8af7ff 0%, var(--accent-cyan) 100%);
+            z-index: 6;
+        }
+
+        .card-noise {
+            position: absolute;
+            inset: 0;
+            opacity: 0.08;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+            background-size: 24px 24px;
+            mask-image: linear-gradient(180deg, black, transparent 80%);
+            z-index: 1;
+        }
+
+        #store-bg {
+            position: absolute;
+            inset: 0 0 0 auto;
+            width: 74%;
+            height: 100%;
+            background-image: url("public/background.jpeg");
+            background-size: cover;
+            background-position: center;
+            filter: saturate(0.95) contrast(1.05);
+            z-index: 2;
+        }
+
+        .gradient-overlay {
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg, #111111 0%, #111111 26%, rgba(17, 17, 17, 0.9) 45%, rgba(17, 17, 17, 0.28) 70%, rgba(17, 17, 17, 0.05) 100%),
+                linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.32));
+            z-index: 3;
+        }
+
+        .cyan-glow {
+            position: absolute;
+            top: -90px;
+            right: 220px;
+            width: 260px;
+            height: 260px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.28) 0%, rgba(0, 229, 255, 0) 72%);
+            z-index: 3;
+        }
+
+        .pink-glow {
+            position: absolute;
+            bottom: -120px;
+            left: 180px;
+            width: 320px;
+            height: 320px;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(255, 0, 127, 0.16) 0%, rgba(255, 0, 127, 0) 72%);
+            z-index: 3;
+        }
+
+        .content-layer {
+            position: relative;
+            z-index: 8;
+            height: 100%;
+            padding: 52px 56px 48px 58px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .brand-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0;
+            border-radius: 0;
+            background: transparent;
+            border: 0;
+            box-shadow: none;
+        }
+
+        .logo-shell {
+            width: 58px;
+            height: 58px;
+            border-radius: 18px;
+            padding: 7px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 245, 247, 0.84));
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+        }
+
+        .member-badge {
+            transform: rotate(2deg);
+            background: linear-gradient(135deg, #ff3ca0 0%, var(--accent-pink) 100%);
+            box-shadow: 0 16px 32px rgba(255, 0, 127, 0.34);
+        }
+
+        .member-copy {
+            max-width: 60%;
+            margin-top: -18px;
+        }
+
+        .eyebrow {
+            letter-spacing: 0.55em;
+            color: var(--text-soft);
+        }
+
+        .name-text {
+            font-size: 74px;
+            line-height: 0.96;
+            letter-spacing: -0.05em;
+            text-transform: uppercase;
+            color: white;
+            text-wrap: balance;
+            max-width: 100%;
+        }
+
+        .phone-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            max-width: 520px;
+            margin-top: 22px;
+        }
+
+        .footer-address {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            max-width: 720px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.14);
+        }
+
+        .footer-panel {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            gap: 24px;
+        }
+
+        @media (max-width: 1100px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            .card-stage {
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="page-shell">
+        <section class="intro">
+            <p class="text-[11px] font-black uppercase tracking-[0.38em] text-slate-500">Polished Concept</p>
+            <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-900">ABC Jaya Member Card</h1>
+            <p class="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
+                Versi ini mempertahankan karakter premium dari <code>desain2.html</code>, lalu merapikan hierarchy, spacing, contrast, dan area info supaya lebih siap dipakai untuk data member yang bervariasi.
+            </p>
+        </section>
+
+        <section class="card-stage">
+            <div class="card-preview">
+                <div id="membership-card">
+                    <div class="accent-line"></div>
+                    <div class="card-noise"></div>
+                    <div id="store-bg"></div>
+                    <div class="gradient-overlay"></div>
+                    <div class="cyan-glow"></div>
+                    <div class="pink-glow"></div>
+
+                    <div class="content-layer">
+                        <header class="flex items-start justify-between gap-8">
+                            <div class="space-y-4">
+                                <div class="brand-chip">
+                                    <div class="logo-shell">
+                                        <img src="public/logo-abc.png" alt="Logo ABC Jaya" class="h-full w-full object-contain">
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black uppercase tracking-[0.45em] text-cyan-300">Frozen Food</p>
+                                        <h2 class="text-[38px] font-black uppercase tracking-[-0.06em] text-white">ABC JAYA</h2>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="member-badge rounded-[24px] px-8 py-3 text-right text-white">
+                                <p class="text-[14px] font-black uppercase tracking-[0.48em] text-white/70">Official</p>
+                                <p class="text-[30px] font-black italic uppercase tracking-[0.16em]">Member</p>
+                            </div>
+                        </header>
+
+                        <section class="footer-panel">
+                            <div class="member-copy">
+                                <h1 id="card-name" class="name-text font-black">M Hasbi Ramadhan</h1>
+
+                                <div class="phone-row text-white">
+                                    <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#25D366] shadow-lg">
+                                        <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 0 0-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-[10px] font-black uppercase tracking-[0.35em] text-white">WhatsApp</p>
+                                        <p id="card-phone" class="truncate text-[30px] font-bold tracking-[-0.04em]">+62 812 3456 7890</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <footer class="footer-address text-white/82">
+                            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/8 text-white">
+                                <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.4" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"></path></svg>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-[10px] font-black uppercase tracking-[0.35em] text-white">Area</p>
+                                <p id="card-address" class="text-[22px] font-medium leading-tight text-white/84">Panjalu, Ciamis, Jawa Barat</p>
+                            </div>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
