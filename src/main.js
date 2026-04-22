@@ -7,6 +7,7 @@ import { createPreviewController } from "./card/preview.js";
 import { renderQrCode } from "./card/qr.js";
 import { setupTabs } from "./ui/tabs.js";
 import { parseBulkRecords } from "./utils/bulk.js";
+import { escapeHtml } from "./utils/html.js";
 
 const app = document.querySelector("#app");
 
@@ -47,6 +48,7 @@ const elements = {
 const state = {
   singleMember: { ...DEFAULT_MEMBER },
   singleQrEnabled: false,
+  isSingleExporting: false,
   bulkRawData: "",
   bulkQrEnabled: false,
   bulkParseResult: {
@@ -89,11 +91,11 @@ function renderBulkPreview() {
   const validPreview = validRecords
     .slice(0, 5)
     .map((record, index) => {
-      const phoneValue = record.phone || "-";
+      const phoneValue = escapeHtml(record.phone || "-");
 
       return `
         <div class="rounded-xl border border-emerald-100 bg-white px-3 py-2 text-xs text-gray-700">
-          <span class="font-black text-emerald-700">Valid ${index + 1}</span> - ${record.name} | ${phoneValue} | ${record.address}
+          <span class="font-black text-emerald-700">Valid ${index + 1}</span> - ${escapeHtml(record.name)} | ${phoneValue} | ${escapeHtml(record.address)}
         </div>
       `;
     })
@@ -104,7 +106,7 @@ function renderBulkPreview() {
     .map(
       (detail) => `
         <div class="rounded-xl border border-rose-100 bg-white px-3 py-2 text-xs text-rose-700">
-          <span class="font-black">Baris ${detail.row}</span> - ${detail.reason}
+          <span class="font-black">Baris ${detail.row}</span> - ${escapeHtml(detail.reason)}
         </div>
       `,
     )
@@ -153,39 +155,86 @@ function syncInputsFromState() {
   elements.bulkData.value = state.bulkRawData;
 }
 
+function syncUiInteractivity() {
+  const isExporting = state.isSingleExporting || state.isBulkExporting;
+
+  elements.inputName.disabled = isExporting;
+  elements.inputPhone.disabled = isExporting;
+  elements.inputAddress.disabled = isExporting;
+  elements.singleUseQr.disabled = isExporting;
+  elements.bulkUseQr.disabled = isExporting;
+  elements.bulkData.disabled = isExporting;
+  elements.tabSingle.disabled = isExporting;
+  elements.tabBulk.disabled = isExporting;
+  elements.btnSingle.disabled = isExporting;
+  elements.btnBulk.disabled =
+    isExporting || state.bulkParseResult.validRecords.length === 0 || !state.bulkRawData.trim();
+}
+
+function setSingleExporting(isSingleExporting) {
+  state.isSingleExporting = isSingleExporting;
+  syncUiInteractivity();
+}
+
 function setBulkExporting(isBulkExporting) {
   state.isBulkExporting = isBulkExporting;
   renderBulkPreview();
+  syncUiInteractivity();
 }
 
 const previewController = createPreviewController(elements, renderQrCode);
 const exportController = createExportController(elements, previewController, {
   getState,
+  setSingleExporting,
   setBulkExporting,
 });
 
 setupTabs(elements);
 
 elements.inputName.addEventListener("input", () => {
+  if (state.isSingleExporting || state.isBulkExporting) {
+    return;
+  }
+
   syncSingleStateFromInputs();
   renderSinglePreview();
 });
 elements.inputPhone.addEventListener("input", () => {
+  if (state.isSingleExporting || state.isBulkExporting) {
+    return;
+  }
+
   syncSingleStateFromInputs();
   renderSinglePreview();
 });
 elements.inputAddress.addEventListener("input", () => {
+  if (state.isSingleExporting || state.isBulkExporting) {
+    return;
+  }
+
   syncSingleStateFromInputs();
   renderSinglePreview();
 });
 elements.singleUseQr.addEventListener("change", () => {
+  if (state.isSingleExporting || state.isBulkExporting) {
+    return;
+  }
+
   state.singleQrEnabled = elements.singleUseQr.checked;
   renderSinglePreview();
 });
 elements.bulkUseQr.addEventListener("change", () => {
+  if (state.isSingleExporting || state.isBulkExporting) {
+    return;
+  }
+
   state.bulkQrEnabled = elements.bulkUseQr.checked;
 });
 elements.bulkData.addEventListener("input", () => {
+  if (state.isSingleExporting || state.isBulkExporting) {
+    return;
+  }
+
   state.bulkRawData = elements.bulkData.value;
   syncBulkParseResult();
   renderBulkPreview();
@@ -206,3 +255,4 @@ syncInputsFromState();
 await renderSinglePreview();
 previewController.syncPreviewScale();
 renderBulkPreview();
+syncUiInteractivity();
