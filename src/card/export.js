@@ -31,7 +31,7 @@ export function createExportController(elements, previewController, stateManager
       pixelRatio: 2,
       width: CARD_SIZE.width,
       height: CARD_SIZE.height,
-      backgroundColor: "#ffffff",
+      backgroundColor: "#111111",
     });
   }
 

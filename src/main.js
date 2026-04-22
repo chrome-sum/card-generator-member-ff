@@ -16,7 +16,6 @@ app.innerHTML = createAppMarkup();
 const elements = {
   card: document.getElementById("membership-card"),
   wrapper: document.querySelector(".card-wrapper"),
-  cardMainSection: document.getElementById("card-main-section"),
   cardName: document.getElementById("card-name"),
   cardPhone: document.getElementById("card-phone"),
   cardAddress: document.getElementById("card-address"),
